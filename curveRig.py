@@ -8,7 +8,7 @@ bl_info = {
     "warning": "",
     "wiki_url": "",
     "category": "Object" }
-    
+
 
 import bpy
 from bpy import context as C
@@ -66,6 +66,9 @@ def VectorLengthCoeff(size, A, B):
     to obtain a vector of the size given in paramerter
     '''
     Vlength = sqrt((A[0] - B[0])**2 + (A[1] - B[1])**2 + (A[2] - B[2])**2)
+    if Vlength == 0:
+        print('problem Vector lenght == 0 !')
+        return (1)
     return (size / Vlength)
 
 
@@ -75,9 +78,13 @@ def CrossVectorCoord(foo, bar, size):
     ##mid = (foo + bar) / 2
     between = foo - bar
     #create a generic Up vector (on Y or Z)
-    up = Vector([0,1.0,0])
-    #the cross product return a 90 degree Vector
-    new = Vector.cross(up, between)
+    up = Vector([1.0,0,0])
+    new = Vector.cross(up, between)#the cross product return a 90 degree Vector
+    if new == Vector([0.0000, 0.0000, 0.0000]):
+        #new == 0 if up vector and between are aligned ! (so change up vector)
+        up = Vector([0,-1.0,0])
+        new = Vector.cross(up, between)#the cross product return a 90 degree Vector
+
     perpendicular = foo + new
     coeff = VectorLengthCoeff(size, foo, perpendicular)
     #position the point in space by adding the new vector multiplied by coeff value to get wanted lenght
@@ -89,7 +96,7 @@ def midpoint(p1, p2):
 
 
 def setEnvelope(bone):
-    bone.envelope_distance = 0.1
+    bone.envelope_distance = 0.01
     bone.envelope_weight = 1.000
     bone.head_radius = 0.01
     bone.tail_radius = 0.0001
@@ -99,7 +106,7 @@ def setEnvelope(bone):
 
 def PlaceCurveControlBone(context):
     C = context
-    
+
     #boneheight size of curve point
     boneheight = context.scene.RC_pointSize
     #handlerHeight size of handler bones
@@ -160,7 +167,7 @@ def PlaceCurveControlBone(context):
     edit_bones = arm.data.edit_bones
 
     for p, c in points.items():
-        print("point", p)
+        #print("point", p)
         #create bones at point
         #print(p, c)
         b = edit_bones.new(p)
@@ -186,7 +193,7 @@ def PlaceCurveControlBone(context):
         bl.tail = c[1] + ((c[1] - c[0]) * VectorLengthCoeff(handlerheight, c[1], c[0]))
         #bl.tail = c[1] + (c[1] - midpoint(c[1], phead) )
         bl.parent = b
-
+        setEnvelope(bl)
         #...and right
         br = edit_bones.new(p + '_R')
 
@@ -194,6 +201,7 @@ def PlaceCurveControlBone(context):
         br.tail = c[2] + ((c[2] - c[0]) * VectorLengthCoeff(handlerheight, c[2], c[0]))
         ##br.tail = c[2] + (c[2] - midpoint(c[2], phead) )
         br.parent = b
+        setEnvelope(br)
 
     #return to object mode
     # exit edit mode to save bones so they can be used in pose mode
@@ -227,7 +235,7 @@ class curveArmatureOps(bpy.types.Operator):
         else:
             if mess:
                 self.report({'INFO'}, mess)
-                
+
         return {"FINISHED"}
 
 
@@ -243,7 +251,7 @@ class CurveRigPanel(bpy.types.Panel):
     bpy.types.Scene.RC_pointSize = bpy.props.FloatProperty(name = 'boneCurvePoint', default=0.2, description = "size of the bone that control points of the curve")
     bpy.types.Scene.RC_handlerSize = bpy.props.FloatProperty(name = 'bonePointHandler', default=0.1, description = "size of the bone that control handlers of the points")
 
-    
+
     def draw(self, context):
         layout = self.layout
         row = layout.row(align = 0)
@@ -256,7 +264,7 @@ class CurveRigPanel(bpy.types.Panel):
         row.prop(context.scene, "RC_SelectedOnly", text="only selected curve points")
 
         row = layout.row(align = 0)
-        row.prop(context.scene, "RC_CustomSize", text="manual bones sizes")        
+        row.prop(context.scene, "RC_CustomSize", text="manual bones sizes")
         if context.scene.RC_CustomSize:
             row = layout.row(align = 0)
             row.prop(context.scene, "RC_pointSize", text="points bones size")
