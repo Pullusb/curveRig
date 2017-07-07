@@ -1,8 +1,9 @@
+# coding: utf-8
 bl_info = {
     "name": "Curve rig",
     "description": "Add bones to control active curve with bone envelope",
     "author": "Samuel Bernou, Christophe Seux",
-    "version": (1, 0, 0),
+    "version": (1, 0, 1),
     "blender": (2, 77, 0),
     "location": "View3D > Tool Shelf > RIG tool > Curve rig",
     "warning": "",
@@ -124,8 +125,8 @@ def PlaceCurveControlBone(context):
     selcount = 0
 
     ##obsolete with button greyed out
-    if ob.type != 'CURVE':
-        return (1, 'active object must be a curve !')
+    # if ob.type != 'CURVE':
+    #     return (1, 'active object must be a curve !')
 
     armcount = 0
     arm = 0
@@ -142,7 +143,6 @@ def PlaceCurveControlBone(context):
         amt = bpy.data.armatures.new(ob.name + '_armature')
         obarm = bpy.data.objects.new(ob.name + '_rig', amt)
         C.scene.objects.link(obarm)
-        #scn.objects.active = obarm
         obarm.select = True
         arm = obarm
 
@@ -165,6 +165,19 @@ def PlaceCurveControlBone(context):
     C.scene.objects.active = arm
     bpy.ops.object.mode_set(mode='EDIT', toggle=False)
     edit_bones = arm.data.edit_bones
+
+    #get bones groups for placing bones in:
+    pointsGrp = arm.pose.bone_groups.get('curve_points')
+    pointsGrp = pointsGrp if pointsGrp else arm.pose.bone_groups.new('curve_points')
+    handlersGrp = arm.pose.bone_groups.get('curve_handlers')
+    handlersGrp = handlersGrp if handlersGrp else arm.pose.bone_groups.new('curve_handlers')
+    #color groups
+    ## COLORS : 'THEME05'=pink;
+    ## '09'=yellow; '01'=red; '02'=orange; '03'=green; '04'=darkBlue (almost default)
+    pointsGrp.color_set = 'THEME04'#couleur des points de curve
+    handlersGrp.color_set = 'THEME09'#couleur des handlers
+    pg = []
+    hg = []
 
     for p, c in points.items():
         #print("point", p)
@@ -203,9 +216,22 @@ def PlaceCurveControlBone(context):
         br.parent = b
         setEnvelope(br)
 
+        #append les bones dans une liste
+        pg.append(b.name)
+        hg.append(bl.name)
+        hg.append(br.name)
+
     #return to object mode
     # exit edit mode to save bones so they can be used in pose mode
     bpy.ops.object.mode_set(mode='OBJECT')
+
+    #place bones in bone_groups via pose_bones (after returning to object mode so update is ok)
+    for b in pg:
+        if arm.pose.bones.get(b):
+            arm.pose.bones[b].bone_group = pointsGrp
+    for b in hg:
+        if arm.pose.bones.get(b):
+            arm.pose.bones[b].bone_group = handlersGrp
 
     C.scene.objects.active = ob
     CreateArmatureModifier(ob, arm)
