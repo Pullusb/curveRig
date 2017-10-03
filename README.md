@@ -18,5 +18,10 @@ Rig active curve to a new armature (or armature in selection) with bones envelop
 ![result](https://github.com/Pullusb/images_repo/raw/master/Bl_curveRig_manipulate.png)
 
 
-### Update 07/07/2017:
+### Update:
+  03/09/2017:
+  - Change naming convention, better distinguish point and handler and allow prefix selection with shift+G in armature\_edit mode
+    Points now prefixed 'PT', handlers 'CT' (previously all CT)
+
+  07/07/2017:
   - Assign generated bones to a bone group for points and another for handlers with a color preset 
