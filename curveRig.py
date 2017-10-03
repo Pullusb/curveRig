@@ -3,7 +3,7 @@ bl_info = {
     "name": "Curve rig",
     "description": "Add bones to control active curve with bone envelope",
     "author": "Samuel Bernou, Christophe Seux",
-    "version": (1, 0, 1),
+    "version": (1, 0, 2),
     "blender": (2, 77, 0),
     "location": "View3D > Tool Shelf > RIG tool > Curve rig",
     "warning": "",
@@ -154,7 +154,7 @@ def PlaceCurveControlBone(context):
             ptcount += 1
             if pt.select_control_point or not context.scene.RC_SelectedOnly:
                 selcount += 1
-                name = 'CT' + str(spcount).zfill(2) + '_' + str(ptcount).zfill(2)
+                name = 'PT' + str(spcount).zfill(2) + '_' + str(ptcount).zfill(2)
                 loc = ob.matrix_world * pt.co
                 points[name] = [mat * pt.co, mat * pt.handle_left.xyz, mat * pt.handle_right.xyz]
 
@@ -197,7 +197,7 @@ def PlaceCurveControlBone(context):
         b.tail = ptail
         setEnvelope(b)
         #create bones at handle left...
-        bl = edit_bones.new(p + '_L')
+        bl = edit_bones.new('C'+p[1:] + '_L')#replace PT with CT >> 'C'+p[1:]
 
         bl.head = c[1]
 
@@ -208,7 +208,7 @@ def PlaceCurveControlBone(context):
         bl.parent = b
         setEnvelope(bl)
         #...and right
-        br = edit_bones.new(p + '_R')
+        br = edit_bones.new('C'+p[1:] + '_R')#replace PT with CT
 
         br.head = c[2]
         br.tail = c[2] + ((c[2] - c[0]) * VectorLengthCoeff(handlerheight, c[2], c[0]))
