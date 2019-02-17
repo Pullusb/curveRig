@@ -2,7 +2,9 @@
 Blender addon - Rig curve in one click
   
 **[Download latest](https://raw.githubusercontent.com/Pullusb/curveRig/master/curveRig.py)** (right click, save Target as)  
-  
+
+**[Download 2.79 version](https://raw.githubusercontent.com/Pullusb/curveRig/master/curveRig_279.py)** (right click, save Target as)
+
 ### Description:
 Rig active curve to a new armature (or armature in selection) with bones envelopes on curve points and handlers
 
@@ -21,6 +23,9 @@ Rig active curve to a new armature (or armature in selection) with bones envelop
 
 
 ### Update:
+  17/02/2079:
+  - 2.8 version added as main version (older version renamed CurveRig_279)
+
   03/09/2017:
   - Change naming convention, better distinguish point and handler and allow prefix selection with shift+G in armature\_edit mode
     Points now prefixed 'PT', handlers 'CT' (previously all CT)
