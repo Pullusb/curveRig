@@ -280,7 +280,7 @@ class RENDER_PT_color_management_curves(RenderButtonsPanel, Panel):
 '''
 
 class PANEL_PT_CurveRigPanel(bpy.types.Panel):
-    bl_idname = "object.cr_ot_curve_rig"
+    bl_idname = "CRIG_PT_curve_rig"
     bl_label = "Curve rig"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
