@@ -1,9 +1,12 @@
 # curveRig
 Blender addon - Rig curve in one click
-  
+
 **[Download latest (2.8)](https://raw.githubusercontent.com/Pullusb/curveRig/master/curveRig.py)** (right click, save Target as)  
 
 **[Download older (2.7)](https://raw.githubusercontent.com/Pullusb/curveRig/master/curveRig_279.py)** (right click, save Target as)
+
+
+### [youtube demo](https://youtu.be/8SpkjBrYnJc)
 
 ### Description:
 Rig active curve to a new armature (or armature in selection) with bones envelopes on curve points and handlers
