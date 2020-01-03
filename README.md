@@ -8,6 +8,8 @@ Blender addon - Rig curve in one click
 
 ### [youtube demo](https://youtu.be/8SpkjBrYnJc)
 
+Want to support me? [Check this page](http://www.samuelbernou.fr/donate)
+
 ### Description:
 Rig active curve to a new armature (or armature in selection) with bones envelopes on curve points and handlers
 
