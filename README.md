@@ -1,9 +1,14 @@
 # curveRig
+
 Blender addon - Rig curve in one click
 
-**[Download latest (2.8)](https://raw.githubusercontent.com/Pullusb/curveRig/master/curveRig.py)** (right click, save Target as)  
 
-**[Download older (2.7)](https://raw.githubusercontent.com/Pullusb/curveRig/master/curveRig_279.py)** (right click, save Target as)
+<!-- You can get and upgraded version (paid) on my gumroad page: -->
+
+**[Download latest (2.8+)](https://github.com/Pullusb/curveRig/archive/refs/heads/master.zip)**
+<!-- **[Download latest (2.8)](https://raw.githubusercontent.com/Pullusb/curveRig/master/curveRig.py)** (right click, save Target as)   -->
+
+Old blender 2.7 compatible version can be found [here](https://github.com/Pullusb/SB_blender_addons_old_2_7)
 
 
 ### [youtube demo](https://youtu.be/8SpkjBrYnJc)
