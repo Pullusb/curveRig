@@ -3,7 +3,7 @@ bl_info = {
     "name": "Curve rig",
     "description": "Add bones to control active curve with bone envelope",
     "author": "Samuel Bernou, Christophe Seux",
-    "version": (1, 0, 3),
+    "version": (1, 1, 0),
     "blender": (2, 80, 0),
     "location": "View3D > Tool Shelf > RIG tool > Curve rig",
     "warning": "",
@@ -167,16 +167,27 @@ def PlaceCurveControlBone(context):
     bpy.ops.object.mode_set(mode='EDIT', toggle=False)
     edit_bones = arm.data.edit_bones
 
-    #get bones groups for placing bones in:
-    pointsGrp = arm.pose.bone_groups.get('curve_points')
-    pointsGrp = pointsGrp if pointsGrp else arm.pose.bone_groups.new(name='curve_points')
-    handlersGrp = arm.pose.bone_groups.get('curve_handlers')
-    handlersGrp = handlersGrp if handlersGrp else arm.pose.bone_groups.new(name='curve_handlers')
-    #color groups
+    ## Color groups
     ## COLORS : 'THEME05'=pink;
     ## '09'=yellow; '01'=red; '02'=orange; '03'=green; '04'=darkBlue (almost default)
-    pointsGrp.color_set = 'THEME04'#couleur des points de curve
-    handlersGrp.color_set = 'THEME09'#couleur des handlers
+    c_point_palette = 'THEME04' # curve points color
+    c_handler_palette = 'THEME09' # handlers color
+
+    # Get bones groups for placing bones in:
+    if bpy.app.version < (4,0,0):
+        pointsGrp = arm.pose.bone_groups.get('curve_points')
+        pointsGrp = pointsGrp if pointsGrp else arm.pose.bone_groups.new(name='curve_points')
+        handlersGrp = arm.pose.bone_groups.get('curve_handlers')
+        handlersGrp = handlersGrp if handlersGrp else arm.pose.bone_groups.new(name='curve_handlers')
+        pointsGrp.color_set = c_point_palette
+        handlersGrp.color_set = c_handler_palette
+    
+    else:
+        pointsGrp = arm.data.collections.get('curve_points')
+        pointsGrp = pointsGrp if pointsGrp else arm.data.collections.new(name='curve_points')
+        handlersGrp = arm.data.collections.get('curve_handlers')
+        handlersGrp = handlersGrp if handlersGrp else arm.data.collections.new(name='curve_handlers')
+
     pg = []
     hg = []
 
@@ -217,10 +228,20 @@ def PlaceCurveControlBone(context):
         br.parent = b
         setEnvelope(br)
 
-        #append les bones dans une liste
-        pg.append(b.name)
-        hg.append(bl.name)
-        hg.append(br.name)
+        if bpy.app.version < (4,0,0):
+            # Append bones in list
+            pg.append(b.name)
+            hg.append(bl.name)
+            hg.append(br.name)
+
+        else:
+            # Assign to bone collection
+            pointsGrp.assign(b)
+            handlersGrp.assign(bl)
+            handlersGrp.assign(br)
+            # Set color
+            b.color.palette = c_point_palette
+            bl.color.palette = br.color.palette = c_handler_palette
 
     #return to object mode
     # exit edit mode to save bones so they can be used in pose mode
